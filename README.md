@@ -1,8 +1,8 @@
 # PreviewJS — Universal Document Viewer
 
-**[Live Demo →](https://alpaq92.github.io/PreviewJS/)**
-
 A browser-based document viewer that renders **PDF, ODF, RTF, DOC, and DOCX** files natively in the browser — no server, no upload, no conversion. Everything runs client-side; your files never leave your machine.
+
+**[Live Demo →](https://alpaq92.github.io/PreviewJS/)**
 
 ---
 
