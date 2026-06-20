@@ -2,13 +2,14 @@ import { PDFRenderer  } from './renderers/pdf-renderer.js'
 import { ODFRenderer  } from './renderers/odf-renderer.js'
 import { RTFRenderer  } from './renderers/rtf-renderer.js'
 import { DOCXRenderer } from './renderers/docx-renderer.js'
+import { DOCRenderer  } from './renderers/doc-renderer.js'
 
 const EXT_MAP = {
   pdf: 'pdf',
   odt: 'odf', ods: 'odf', odp: 'odf', odg: 'odf', odm: 'odf', odf: 'odf',
   rtf: 'rtf',
   docx: 'docx',
-  doc: 'docx',   // mammoth handles legacy .doc (best-effort)
+  doc: 'doc',
 }
 
 class DocumentViewer {
@@ -18,6 +19,7 @@ class DocumentViewer {
       odf:  new ODFRenderer(),
       rtf:  new RTFRenderer(),
       docx: new DOCXRenderer(),
+      doc:  new DOCRenderer(),
     }
     this.activeRenderer = null
     this.currentPage    = 1

@@ -1,11 +1,11 @@
 import { BaseRenderer } from './base-renderer.js'
 
-const CDN_JQUERY = 'https://code.jquery.com/jquery-3.7.1.min.js'
+const BASE = import.meta.env.BASE_URL
 const SCRIPTS = [
-  CDN_JQUERY,
-  '/rtfjs/EMFJS.bundle.min.js',
-  '/rtfjs/WMFJS.bundle.min.js',
-  '/rtfjs/RTFJS.bundle.min.js',
+  `${BASE}rtfjs/jquery.min.js`,
+  `${BASE}rtfjs/EMFJS.bundle.min.js`,
+  `${BASE}rtfjs/WMFJS.bundle.min.js`,
+  `${BASE}rtfjs/RTFJS.bundle.min.js`,
 ]
 
 let _loaded = false
@@ -35,15 +35,16 @@ export class RTFRenderer extends BaseRenderer {
 
     await ensureRTFJS()
 
-    // RTFJS.Document expects a string or ArrayBuffer
-    const doc = new window.RTFJS.Document(buffer, {})
-    const elements = await doc.render()
+    const doc = new window.RTFJS.Document(buffer)
+    const result = await doc.render()
 
     container.innerHTML = ''
     const page = document.createElement('div')
     page.className = 'doc-page'
     page.dataset.page = 1
-    elements.forEach(el => page.appendChild(el))
+
+    // render() returns jQuery-wrapped elements for some files — use jQuery append
+    window.$(page).append(result)
     container.appendChild(page)
 
     this.numPages = 1

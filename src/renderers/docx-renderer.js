@@ -12,19 +12,7 @@ export class DOCXRenderer extends BaseRenderer {
       throw new Error(`mammoth could not be loaded: ${e.message}`)
     }
 
-    let result
-    try {
-      result = await mammoth.convertToHtml({ arrayBuffer: buffer })
-    } catch (err) {
-      // mammoth uses JSZip internally; binary .doc files (OLE format) aren't ZIPs
-      if (/zip|central directory/i.test(err.message)) {
-        throw new Error(
-          'Legacy binary .doc format cannot be opened in the browser. ' +
-          'Open the file in Word and save it as .docx, then try again.'
-        )
-      }
-      throw err
-    }
+    const result = await mammoth.convertToHtml({ arrayBuffer: buffer })
 
     if (result.messages?.length) {
       console.warn('[DOCX] conversion messages:', result.messages)
