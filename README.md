@@ -57,4 +57,4 @@ PreviewJS is built on these open-source libraries:
 
 ## License
 
-MIT © 2026 Roman Chojnacki — see [LICENSE](LICENSE)
+MIT © 2026 Alpaq92 — see [LICENSE](LICENSE)
