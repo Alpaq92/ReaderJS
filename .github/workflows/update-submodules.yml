@@ -51,7 +51,7 @@ jobs:
       - name: Build release artifact
         if: steps.changes.outputs.changed == 'true'
         run: |
-          npx vite build --base /PreviewJS/
+          npx vite build --base /ReaderJS/
           cd dist && zip -r ../release.zip . && cd ..
 
       - name: Create GitHub release

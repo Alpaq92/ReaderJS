@@ -1,8 +1,8 @@
-# PreviewJS — Universal Document Viewer
+# ReaderJS — Universal Document Viewer
 
 A browser-based document viewer that renders **PDF, ODF, RTF, DOC, and DOCX** files natively in the browser — no server, no upload, no conversion. Everything runs client-side; your files never leave your machine.
 
-To give it a try without installing anything, visit the [live demo](https://alpaq92.github.io/PreviewJS/).
+To give it a try without installing anything, visit the [live demo](https://alpaq92.github.io/ReaderJS/).
 
 ![DOCX viewer screenshot](gallery/docx-viewer.png)
 
@@ -27,15 +27,15 @@ To give it a try without installing anything, visit the [live demo](https://alpa
 ## Running Locally
 
 ```bash
-git clone --recurse-submodules https://github.com/Alpaq92/PreviewJS.git
-cd PreviewJS
+git clone --recurse-submodules https://github.com/Alpaq92/ReaderJS.git
+cd ReaderJS
 npm install
 npm run dev
 ```
 
 ## Credits
 
-PreviewJS is built on these open-source libraries:
+ReaderJS is built on these open-source libraries:
 
 | Library | Author / Source | Role |
 |---------|----------------|------|

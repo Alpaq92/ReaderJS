@@ -123,9 +123,9 @@ class DocumentViewer {
 
       this.updatePageInfo()
       this._setFormatBadge(format)
-      document.title = `${file.name} — PreviewJS`
+      document.title = `${file.name} — ReaderJS`
     } catch (err) {
-      console.error('[PreviewJS] load error:', err)
+      console.error('[ReaderJS] load error:', err)
       this._showError(`Could not open "${file.name}": ${err.message}`)
     } finally {
       this._setLoading(false)
