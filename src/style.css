@@ -148,7 +148,8 @@ html, body {
 
 #pageNumber {
   width: 48px;
-  padding: 3px 5px;
+  height: 13px;
+  padding: 0 5px;
   background: #636363;
   border: 1px solid #3a3a3a;
   border-radius: 3px;
