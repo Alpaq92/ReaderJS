@@ -16,3 +16,6 @@
 [submodule "submodules/marked"]
 	path = submodules/marked
 	url = https://github.com/markedjs/marked
+[submodule "submodules/foliate-js"]
+	path = submodules/foliate-js
+	url = https://github.com/johnfactotum/foliate-js

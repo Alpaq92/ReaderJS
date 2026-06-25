@@ -5,6 +5,7 @@ import { DOCXRenderer } from './renderers/docx-renderer.js'
 import { DOCRenderer  } from './renderers/doc-renderer.js'
 import { MDRenderer   } from './renderers/md-renderer.js'
 import { ComicRenderer } from './renderers/comic-renderer.js'
+import { EPUBRenderer } from './renderers/epub-renderer.js'
 
 const EXT_MAP = {
   pdf: 'pdf',
@@ -14,6 +15,7 @@ const EXT_MAP = {
   doc: 'doc',
   md: 'md', markdown: 'md',
   cbz: 'comic', cbr: 'comic', cbt: 'comic',
+  epub: 'epub', mobi: 'epub', azw3: 'epub', azw: 'epub', kf8: 'epub',
 }
 
 class DocumentViewer {
@@ -26,6 +28,7 @@ class DocumentViewer {
       doc:  new DOCRenderer(),
       md:   new MDRenderer(),
       comic: new ComicRenderer(),
+      epub: new EPUBRenderer(),
     }
     this.activeRenderer = null
     this.currentPage    = 1
@@ -113,6 +116,7 @@ class DocumentViewer {
     try {
       const buffer   = await file.arrayBuffer()
       const renderer = this.renderers[format]
+      this.currentFileName = file.name   // used by foliate for format hinting
 
       this.activeRenderer?.destroy()
       this.activeRenderer = renderer
