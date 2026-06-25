@@ -473,9 +473,11 @@ html, body {
   display: flex;
   flex-direction: column;
 }
-/* compare mode: full-bleed — drop the viewer padding and stretch docContainer */
-#viewerContainer.is-compare { padding: 0; }
-#viewerContainer.is-compare #docContainer { align-self: stretch; padding-bottom: 0; }
+/* compare mode: full-bleed — flatten the toolbar's drop shadow, drop the viewer
+   padding, and stretch docContainer so the diff meets the toolbar cleanly */
+#mainContainer.is-compare #toolbarContainer { box-shadow: none; }
+#mainContainer.is-compare #viewerContainer { padding: 0; }
+#mainContainer.is-compare #docContainer { align-self: stretch; padding-bottom: 0; }
 .diff-mode-toggle {
   display: flex;
   gap: 4px;

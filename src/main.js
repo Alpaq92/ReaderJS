@@ -317,7 +317,7 @@ export class DocumentViewer {
       const page = document.createElement('div')
       page.className = 'diff-page'
       container.appendChild(page)
-      document.getElementById('viewerContainer').classList.add('is-compare')   // full-bleed diff
+      document.getElementById('mainContainer').classList.add('is-compare')   // full-bleed diff + flat toolbar
 
       const { renderCompare } = await import('./diff-view.js')
       this._compareCtl = renderCompare(page, {
@@ -347,7 +347,7 @@ export class DocumentViewer {
   _clearCompare() {
     this._compareCtl?.destroy()
     this._compareCtl = null
-    document.getElementById('viewerContainer')?.classList.remove('is-compare')
+    document.getElementById('mainContainer')?.classList.remove('is-compare')
   }
 
   /* ── Page navigation ─────────────────────────────────────────────────── */
