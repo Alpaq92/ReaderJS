@@ -279,14 +279,17 @@ export class DocumentViewer {
   async _extractText(buffer, name) {
     const ext = (name || '').split('.').pop().toLowerCase()
     const format = EXT_MAP[ext]
-    if (!format || !DIFFABLE.has(format)) {
-      const err = new Error('unsupported-compare')
-      err.code = 'unsupported-compare'; err.format = format || ext
-      throw err
-    }
+    const unsupported = () => Object.assign(new Error('unsupported-compare'), { code: 'unsupported-compare', format: format || ext })
+    if (!format) throw unsupported()
     const renderer = await RENDERER_LOADERS[format]()   // fresh, not the cached singleton
-    const host = document.createElement('div')          // detached — off the live DOM
     try {
+      // Renderers that read text straight from their engine (e.g. PDF's text
+      // layer) skip the DOM render entirely.
+      if (typeof renderer.extractText === 'function') {
+        return { text: await renderer.extractText(buffer, name), format }
+      }
+      if (!DIFFABLE.has(format)) throw unsupported()
+      const host = document.createElement('div')        // detached — off the live DOM
       await renderer.load(buffer, host, { currentFileName: name })
       return { text: extractRendered(host, format), format }
     } finally {

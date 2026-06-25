@@ -171,6 +171,31 @@ export class PDFRenderer extends BaseRenderer {
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
+  // Plain-text of the PDF for the compare view — pulled from pdf.js's text
+  // layer (no canvas render). Lines are split on pdf.js's hasEOL flag and on a
+  // baseline (y) change, so reflowed runs land on the right line.
+  async extractText(buffer) {
+    const doc = await pdfjsLib.getDocument({ data: new Uint8Array(buffer) }).promise
+    const lines = []
+    try {
+      for (let p = 1; p <= doc.numPages; p++) {
+        const { items } = await (await doc.getPage(p)).getTextContent()
+        let line = '', lastY = null
+        for (const it of items) {
+          const y = it.transform?.[5]
+          if (line && lastY != null && y != null && Math.abs(y - lastY) > 4) { lines.push(line); line = '' }
+          line += it.str
+          if (y != null) lastY = y
+          if (it.hasEOL) { lines.push(line); line = ''; lastY = null }
+        }
+        if (line) lines.push(line)
+      }
+    } finally {
+      doc.destroy()
+    }
+    return lines.join('\n')
+  }
+
   destroy() {
     this._observer?.disconnect()
     this.pdfDoc?.destroy()
