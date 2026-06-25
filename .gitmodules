@@ -13,3 +13,6 @@
 [submodule "submodules/rtf.js"]
 	path = submodules/rtf.js
 	url = https://github.com/tbluemel/rtf.js
+[submodule "submodules/marked"]
+	path = submodules/marked
+	url = https://github.com/markedjs/marked

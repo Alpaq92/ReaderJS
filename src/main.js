@@ -3,6 +3,7 @@ import { ODFRenderer  } from './renderers/odf-renderer.js'
 import { RTFRenderer  } from './renderers/rtf-renderer.js'
 import { DOCXRenderer } from './renderers/docx-renderer.js'
 import { DOCRenderer  } from './renderers/doc-renderer.js'
+import { MDRenderer   } from './renderers/md-renderer.js'
 
 const EXT_MAP = {
   pdf: 'pdf',
@@ -10,6 +11,7 @@ const EXT_MAP = {
   rtf: 'rtf',
   docx: 'docx',
   doc: 'doc',
+  md: 'md', markdown: 'md',
 }
 
 class DocumentViewer {
@@ -20,6 +22,7 @@ class DocumentViewer {
       rtf:  new RTFRenderer(),
       docx: new DOCXRenderer(),
       doc:  new DOCRenderer(),
+      md:   new MDRenderer(),
     }
     this.activeRenderer = null
     this.currentPage    = 1
