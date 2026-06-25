@@ -156,8 +156,6 @@ html, body {
   text-align: center;
   font-size: 13px;
   -moz-appearance: textfield;
-  position: relative;
-  top: 2px;
 }
 #pageNumber::-webkit-inner-spin-button,
 #pageNumber::-webkit-outer-spin-button { -webkit-appearance: none; }
@@ -194,6 +192,7 @@ html, body {
 #formatBadge.badge-md    { background: #d81b60; color: #fff; }
 #formatBadge.badge-comic { background: #f4511e; color: #fff; }
 #formatBadge.badge-epub  { background: #00897b; color: #fff; }
+#formatBadge.badge-txt   { background: #6d4c41; color: #fff; }
 
 /* File input — hidden, triggered by label */
 #fileInput { display: none; }
@@ -320,6 +319,7 @@ html, body {
 .tag-md    { background: #d81b60; color: #fff; }
 .tag-comic { background: #f4511e; color: #fff; }
 .tag-epub  { background: #00897b; color: #fff; }
+.tag-txt   { background: #6d4c41; color: #fff; }
 
 .powered-by {
   margin-top: 22px;
@@ -385,6 +385,17 @@ html, body {
 .doc-page td, .doc-page th { border: 1px solid #ccc; padding: 4px 8px; }
 .doc-page h1,h2,h3,h4,h5,h6 { line-height: 1.3; margin: .8em 0 .4em; }
 .doc-page p { margin-bottom: .6em; }
+
+/* Plain-text (.txt) rendering */
+.doc-page .txt-content {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13.5px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  margin: 0;
+  color: #000;
+}
 
 /* Styles used by doc-renderer (JSDoc output) */
 .doc-page .doc-table { border-collapse: collapse; width: 100%; margin: 6px 0 14px; font-size: 13.5px; }

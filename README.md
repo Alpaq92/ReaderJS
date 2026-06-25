@@ -1,6 +1,6 @@
 # ReaderJS — Universal Document Viewer
 
-A browser-based document viewer that renders **PDF, ODF, RTF, DOC, DOCX, Markdown, comic-book archives, and e-books (EPUB/MOBI)** natively in the browser — no server, no upload, no conversion. Everything runs client-side; your files never leave your machine.
+A browser-based document viewer that renders **PDF, ODF, RTF, DOC, DOCX, Markdown, plain text, comic-book archives, and e-books (EPUB/MOBI)** natively in the browser — no server, no upload, no conversion. Everything runs client-side; your files never leave your machine.
 
 To give it a try without installing anything, visit the [live demo](https://alpaq92.github.io/ReaderJS/).
 
@@ -18,6 +18,7 @@ To give it a try without installing anything, visit the [live demo](https://alpa
 | Legacy Word 97–2003 | `.doc` | JSDoc |
 | Word Open XML | `.docx` | mammoth.js |
 | Markdown | `.md` `.markdown` | marked |
+| Plain text | `.txt` `.text` `.log` | native |
 | Comic Book Archive | `.cbz` `.cbr` `.cbt` | JSZip (CBZ) + libarchive.js (CBR/CBT) |
 | E-book | `.epub` `.mobi` `.azw3` | foliate-js |
 

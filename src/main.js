@@ -4,6 +4,7 @@ import { RTFRenderer  } from './renderers/rtf-renderer.js'
 import { DOCXRenderer } from './renderers/docx-renderer.js'
 import { DOCRenderer  } from './renderers/doc-renderer.js'
 import { MDRenderer   } from './renderers/md-renderer.js'
+import { TXTRenderer  } from './renderers/txt-renderer.js'
 import { ComicRenderer } from './renderers/comic-renderer.js'
 import { EPUBRenderer } from './renderers/epub-renderer.js'
 
@@ -14,6 +15,7 @@ const EXT_MAP = {
   docx: 'docx',
   doc: 'doc',
   md: 'md', markdown: 'md',
+  txt: 'txt', text: 'txt', log: 'txt',
   cbz: 'comic', cbr: 'comic', cbt: 'comic',
   epub: 'epub', mobi: 'epub', azw3: 'epub', azw: 'epub', kf8: 'epub',
 }
@@ -27,6 +29,7 @@ class DocumentViewer {
       docx: new DOCXRenderer(),
       doc:  new DOCRenderer(),
       md:   new MDRenderer(),
+      txt:  new TXTRenderer(),
       comic: new ComicRenderer(),
       epub: new EPUBRenderer(),
     }
