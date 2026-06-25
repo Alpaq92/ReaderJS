@@ -2,14 +2,19 @@ import { BaseRenderer } from './base-renderer.js'
 
 const EMU_PER_PX = 9525  // 914400 EMU/inch ÷ 96 px/inch
 const THUMB_W = 320      // rendered thumbnail width (CSS scales it down in the sidebar)
+const THUMB_DELAY = 400  // start thumbnails after PptxViewJS's chart auto-rerender (~200ms)
 
 /**
  * Renders PowerPoint (.pptx) presentations with PptxViewJS (MIT), one slide at a
  * time onto an HTML5 canvas. PptxViewJS paints the slide into the canvas's
  * current size, so the main view pins the canvas to native pixels (from
- * presentation.slideSize, EMU→px) and scales the wrapper via CSS zoom, while
- * slide thumbnails are rendered straight into small canvases. The toolbar's page
- * navigation drives slide changes. (Charts use Chart.js.)
+ * presentation.slideSize, EMU→px) and scales the wrapper via CSS zoom; slide
+ * thumbnails are rendered into a small canvas and kept as <img>.
+ *
+ * All renders are serialised through a queue, and thumbnails are built after the
+ * library's chart auto-rerender window, so nothing renders concurrently — that
+ * race intermittently corrupted the first (cold) load. The load is also retried
+ * once for resilience.
  */
 export class PPTXRenderer extends BaseRenderer {
   constructor() {
@@ -20,9 +25,10 @@ export class PPTXRenderer extends BaseRenderer {
     this._idx    = 0
     this._slideW = 960
     this._slideH = 720
-    this._gen    = 0      // bumped on (re)load/destroy to cancel stale thumbnail loops
-    this.defaultScaleOption = 'page-fit'  // show the whole slide on open
-    this.buildsThumbnailsAsync = true     // main.js shouldn't add the empty placeholder
+    this._gen    = 0                  // cancels stale thumbnail loops on reload/destroy
+    this._chain  = Promise.resolve()  // serialises renders
+    this.defaultScaleOption = 'page-fit'
+    this.buildsThumbnailsAsync = true
   }
 
   async load(buffer, container, viewer) {
@@ -39,27 +45,52 @@ export class PPTXRenderer extends BaseRenderer {
     this._wrap   = wrap
     this._canvas = canvas
 
-    this._view = new PPTXViewer({ canvas, slideSizeMode: 'fit' })
-    await this._view.loadFile(buffer)
-    this.numPages = this._view.getSlideCount() || 1
-    this._idx = 0
+    await this._loadWithRetry(buffer, gen, PPTXViewer)
 
-    const sz = this._view.presentation?.slideSize
-    if (sz?.cx && sz?.cy) {
-      this._slideW = Math.round(sz.cx / EMU_PER_PX)
-      this._slideH = Math.round(sz.cy / EMU_PER_PX)
+    setTimeout(() => { if (gen === this._gen) this._buildThumbnails(gen) }, THUMB_DELAY)
+  }
+
+  async _loadWithRetry(buffer, gen, PPTXViewer) {
+    let lastErr
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        this._chain = Promise.resolve()
+        this._view = new PPTXViewer({ canvas: this._canvas, slideSizeMode: 'fit' })
+        await this._view.loadFile(buffer)
+        if (gen !== this._gen) return
+        this.numPages = this._view.getSlideCount() || 1
+        this._idx = 0
+        const sz = this._view.presentation?.slideSize
+        if (sz?.cx && sz?.cy) {
+          this._slideW = Math.round(sz.cx / EMU_PER_PX)
+          this._slideH = Math.round(sz.cy / EMU_PER_PX)
+        }
+        await this._renderSlide(0)
+        return
+      } catch (e) {
+        lastErr = e
+        await new Promise(r => setTimeout(r, 200))  // let the cold init settle, then retry
+      }
     }
+    throw lastErr
+  }
 
-    await this._renderSlide(0)
-    this._buildThumbnails(gen)   // background, non-blocking
+  // Serialise a render task; the caller sees its result/error, but the chain
+  // keeps going even if a task fails.
+  _enqueue(task) {
+    const result = this._chain.then(() => (this._view ? task() : undefined))
+    this._chain = result.catch(() => {})
+    return result
   }
 
   // PptxViewJS fits the slide into the canvas's current backing size, so pin the
   // canvas to the slide's native pixels (correct aspect) before rendering.
-  async _renderSlide(idx) {
-    this._canvas.width  = this._slideW
-    this._canvas.height = this._slideH
-    await this._view.renderSlide(idx, this._canvas).catch(() => {})
+  _renderSlide(idx) {
+    return this._enqueue(async () => {
+      this._canvas.width  = this._slideW
+      this._canvas.height = this._slideH
+      await this._view.renderSlide(idx, this._canvas)
+    })
   }
 
   async _buildThumbnails(gen) {
@@ -71,8 +102,8 @@ export class PPTXRenderer extends BaseRenderer {
     canvas.width = tw
     canvas.height = th
     for (let i = 0; i < this.numPages; i++) {
-      try { await this._view.renderSlide(i, canvas) } catch { /* skip this slide */ }
-      if (gen !== this._gen || !this._view) return  // a newer doc loaded / destroyed
+      await this._enqueue(() => this._view.renderSlide(i, canvas)).catch(() => {})
+      if (gen !== this._gen || !this._view) return
 
       // Use an <img> (not the canvas): max-width/height:auto scales an <img>
       // correctly to the sidebar width, whereas a <canvas> keeps its height.
@@ -94,7 +125,7 @@ export class PPTXRenderer extends BaseRenderer {
   scrollToPage(n) {
     if (!this._view) return
     this._idx = Math.max(0, Math.min(this.numPages - 1, n - 1))
-    this._renderSlide(this._idx)
+    this._renderSlide(this._idx).catch(() => {})
     this._highlightThumb(this._idx + 1)
   }
 
@@ -113,7 +144,7 @@ export class PPTXRenderer extends BaseRenderer {
   getPageHeight() { return this._slideH }
 
   destroy() {
-    this._gen++            // stop any in-flight thumbnail loop
+    this._gen++
     this._view   = null
     this._wrap   = null
     this._canvas = null
