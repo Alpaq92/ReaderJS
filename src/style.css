@@ -191,6 +191,8 @@ html, body {
   border-radius: 3px;
   color: #fff;
   text-align: center;
+  position: relative;
+  top: 1px;               /* nudge the digit down onto the "/ N" baseline */
   font-size: 13px;
   font-family: inherit;   /* match the toolbar text — UA default is Arial, which sits off the baseline */
   -moz-appearance: textfield;
