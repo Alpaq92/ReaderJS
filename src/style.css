@@ -191,7 +191,7 @@ html, body {
 #formatBadge.badge-rtf  { background: #1e88e5; color: #fff; }
 #formatBadge.badge-docx { background: #5e35b1; color: #fff; }
 #formatBadge.badge-doc  { background: #2b6cb0; color: #fff; }
-#formatBadge.badge-md    { background: #455a64; color: #fff; }
+#formatBadge.badge-md    { background: #d81b60; color: #fff; }
 #formatBadge.badge-comic { background: #f4511e; color: #fff; }
 #formatBadge.badge-epub  { background: #00897b; color: #fff; }
 
@@ -317,7 +317,7 @@ html, body {
 .tag-rtf  { background: #1e88e5; color: #fff; }
 .tag-docx { background: #5e35b1; color: #fff; }
 .tag-doc  { background: #2b6cb0; color: #fff; }
-.tag-md    { background: #455a64; color: #fff; }
+.tag-md    { background: #d81b60; color: #fff; }
 .tag-comic { background: #f4511e; color: #fff; }
 .tag-epub  { background: #00897b; color: #fff; }
 
