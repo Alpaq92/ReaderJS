@@ -446,21 +446,25 @@ html, body {
 .image-info dt { color: #666; }
 .image-info dd { color: #111; word-break: break-word; }
 
-/* ── Compare / diff view ───────────────────────────────────────────────── */
+/* ── Compare / diff view (dark, matches the app chrome) ────────────────── */
 .diff-page {
-  background: #fff;
-  color: #1b1b1b;
-  width: min(96%, 1100px);
-  box-shadow: 0 2px 10px rgba(0,0,0,.5);
-  flex-shrink: 0;
-  align-self: center;
+  background: #2b2d31;
+  color: #d6d9de;
+  width: 100%;
+  min-height: 100%;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
 }
+/* compare mode: full-bleed — drop the viewer padding and stretch docContainer */
+#viewerContainer.is-compare { padding: 0; }
+#viewerContainer.is-compare #docContainer { align-self: stretch; padding-bottom: 0; }
 .diff-mode-toggle {
   display: flex;
   gap: 4px;
-  padding: 8px 10px;
-  background: #f3f3f3;
-  border-bottom: 1px solid #ddd;
+  padding: 7px 10px;
+  background: #34363b;
+  border-bottom: 1px solid #1f2023;
   position: sticky;
   top: 0;
   z-index: 3;
@@ -469,71 +473,73 @@ html, body {
   background: transparent;
   border: 1px solid transparent;
   border-radius: 4px;
-  padding: 4px 11px;
+  padding: 4px 12px;
   font-size: 12px;
-  color: #555;
+  color: #aab1ba;
   cursor: pointer;
+  transition: background 0.1s, color 0.1s;
 }
-.diff-mode-btn:hover { background: #e6e6e6; }
-.diff-mode-btn.active { background: #fff; color: #1565c0; border-color: #90caf9; font-weight: 600; }
+.diff-mode-btn:hover { background: rgba(255,255,255,.08); color: #fff; }
+.diff-mode-btn.active { background: #2b2d31; color: #90caf9; border-color: #90caf9; font-weight: 600; }
 
-.diff-body { position: relative; }
+.diff-body { position: relative; flex: 1 1 auto; }
 .diff-rows { font-family: ui-monospace, 'Cascadia Code', Menlo, Consolas, monospace; font-size: 12.5px; line-height: 1.55; }
 
 /* side-by-side: aligned two-column grid */
 .diff-rows.side-by-side { display: grid; grid-template-columns: 1fr 1fr; }
-.diff-cell { display: flex; min-height: 1.55em; border-bottom: 1px solid #f4f4f4; }
-.diff-cell:nth-child(odd) { border-right: 1px solid #e8e8e8; }
+.diff-cell { display: flex; min-height: 1.55em; border-bottom: 1px solid rgba(255,255,255,.04); }
+.diff-cell:nth-child(odd) { border-right: 1px solid rgba(255,255,255,.07); }
 .diff-lineno {
   flex: 0 0 46px; text-align: right; padding: 1px 8px;
-  color: #b0b0b0; background: #fafafa; user-select: none; border-right: 1px solid #eee;
+  color: #6c7077; background: rgba(0,0,0,.18); user-select: none; border-right: 1px solid rgba(255,255,255,.05);
 }
 .diff-text { flex: 1; padding: 1px 9px; white-space: pre-wrap; overflow-wrap: anywhere; }
-.diff-cell.equal { background: #fff; }
-.diff-cell.del   { background: #ffeef0; }
-.diff-cell.add   { background: #e6ffed; }
-.diff-cell.blank { background: #fbfbfb; }
+.diff-cell.equal { background: transparent; }
+.diff-cell.del   { background: rgba(248,81,73,.13); }
+.diff-cell.add   { background: rgba(46,160,67,.15); }
+.diff-cell.blank { background: rgba(0,0,0,.13); }
 
 /* unified: single column with old/new gutters + sign */
-.diff-rows.unified .diff-line { display: flex; min-height: 1.55em; border-bottom: 1px solid #fafafa; }
+.diff-rows.unified .diff-line { display: flex; min-height: 1.55em; border-bottom: 1px solid rgba(255,255,255,.03); }
 .diff-rows.unified .diff-lineno { flex: 0 0 40px; }
-.diff-rows.unified .diff-sign { flex: 0 0 18px; text-align: center; color: #999; user-select: none; }
-.diff-rows.unified .diff-line.del { background: #ffeef0; }
-.diff-rows.unified .diff-line.add { background: #e6ffed; }
+.diff-rows.unified .diff-sign { flex: 0 0 18px; text-align: center; color: #7a7f87; user-select: none; }
+.diff-rows.unified .diff-line.del { background: rgba(248,81,73,.13); }
+.diff-rows.unified .diff-line.add { background: rgba(46,160,67,.15); }
 
 /* inline: flowing track-changes */
 .diff-rows.inline { padding: 12px 18px; white-space: pre-wrap; overflow-wrap: anywhere; }
 .diff-rows.inline .diff-line { display: block; }
 
-/* ins / del marks */
-.diff-text ins, .diff-rows.inline ins { background: #abf2bc; color: #033a16; text-decoration: none; border-radius: 2px; }
-.diff-text del, .diff-rows.inline del { background: #ffc9cc; color: #7a0010; text-decoration: none; border-radius: 2px; }
+/* ins / del word marks */
+.diff-text ins, .diff-rows.inline ins { background: rgba(46,160,67,.4); color: #c4f3ce; text-decoration: none; border-radius: 2px; }
+.diff-text del, .diff-rows.inline del { background: rgba(248,81,73,.4); color: #ffd7d4; text-decoration: none; border-radius: 2px; }
 .diff-rows.inline del { text-decoration: line-through; }
 
 /* hoverable change rows */
 .diff-change { cursor: help; }
 .diff-change:hover { outline: 1px solid #90caf9; outline-offset: -1px; }
 
-/* hover tooltip + pinned popovers (reuse the .image-info white-panel look) */
+/* hover tooltip + pinned popovers (dark, like the toolbar/sidebar chrome) */
 .diff-tooltip, .diff-pin {
   position: absolute; z-index: 30; width: 260px; max-width: 80%;
-  background: #fff; color: #222; border: 1px solid #ddd; border-radius: 4px;
-  box-shadow: 0 2px 12px rgba(0,0,0,.45); padding: 6px 10px 10px;
+  background: #2e3035; color: #dfe2e7; border: 1px solid #15161a; border-radius: 5px;
+  box-shadow: 0 4px 16px rgba(0,0,0,.55); padding: 6px 10px 10px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 12px;
 }
-.diff-pin { box-shadow: 0 3px 18px rgba(0,0,0,.5); }
+.diff-pin { box-shadow: 0 5px 22px rgba(0,0,0,.6); }
 .diff-tooltip.hidden { display: none; }
 .diff-tip-head { display: flex; justify-content: flex-end; margin: -2px -4px 2px 0; }
 .diff-pin-btn, .diff-pin-close {
-  background: transparent; border: none; cursor: pointer; font-size: 13px;
-  line-height: 1; padding: 2px 4px; border-radius: 3px; color: #777;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent; border: none; cursor: pointer;
+  padding: 3px; border-radius: 3px; color: #aab1ba;
 }
-.diff-pin-btn:hover, .diff-pin-close:hover { background: #eee; }
-.diff-tip-body h3 { font-size: 10px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: #999; margin-bottom: 6px; }
+.diff-pin-btn:hover, .diff-pin-close:hover { background: rgba(255,255,255,.12); color: #fff; }
+.diff-tip-body h3 { font-size: 10px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: #8b919a; margin-bottom: 6px; }
 .diff-tip-body dl { display: grid; grid-template-columns: auto 1fr; gap: 3px 10px; }
-.diff-tip-body dt { color: #888; }
-.diff-tip-body dd { color: #111; word-break: break-word; }
-.diff-tip-note { color: #888; font-style: italic; }
+.diff-tip-body dt { color: #8b919a; }
+.diff-tip-body dd { color: #f0f2f5; word-break: break-word; }
+.diff-tip-note { color: #8b919a; font-style: italic; }
 
 #formatBadge.badge-compare { background: #5c6bc0; color: #fff; }
 

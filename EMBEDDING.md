@@ -84,9 +84,10 @@ is not neutered). The host↔iframe handshake is origin-checked and same-origin 
 
 ## Comparing two versions (with blame)
 
-For text documents (txt, md, source code, csv/tsv, docx, rtf, odf, doc, xlsx) you
-can show a diff of two versions, with each change carrying **blame** the host
-supplies:
+For any document with extractable text — **PDF**, **DjVu**, **e-books**
+(EPUB/MOBI/AZW3/FB2), and the text/Office formats (md, docx, rtf, odf, doc, txt,
+source code, csv/tsv, xlsx) — you can show a diff of two versions, with each
+change carrying **blame** the host supplies:
 
 ```js
 const inst = ReaderJS.mount(container, {})
@@ -109,8 +110,8 @@ Or compare straight from `mount`: `ReaderJS.mount(el, { compare: { a, b, blame, 
 - Hover a changed line → a tooltip shows its blame; click 📌 to **pin** it open (multiple pins allowed).
 - **`blame` must be plain data** — functions don't survive `postMessage`. Keys are
   the line numbers of the *new* version (matching `git blame`).
-- Canvas/reflowable formats (pdf, djvu, images, comics, pptx, epub) aren't text-comparable
-  and show an "unavailable" message.
+- Only image, comic-archive and slide (PPTX) formats have no extractable text and
+  show an "unavailable" message.
 
 ## Content-Security-Policy
 

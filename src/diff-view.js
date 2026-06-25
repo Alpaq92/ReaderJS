@@ -5,6 +5,20 @@
 import * as Diff from 'diff'
 import { t } from './i18n.js'
 
+// MDI icons (Apache-2.0) for the pin / unpin controls.
+const ICON_PIN = 'M16,12V4H17V2H7V4H8V12L6,14V16H11.2V22H12.8V16H18V14L16,12Z'
+const ICON_PIN_OFF = 'M2,5.27L3.28,4L20,20.72L18.73,22L12.8,16.07V22H11.2V16H6V14L8,12V11.27L2,5.27M16,12L18,14V16H17.82L8,6.18V4H7V2H17V4H16V12Z'
+
+function icon(d) {
+  const NS = 'http://www.w3.org/2000/svg'
+  const svg = document.createElementNS(NS, 'svg')
+  svg.setAttribute('viewBox', '0 0 24 24')
+  svg.setAttribute('width', '15'); svg.setAttribute('height', '15'); svg.setAttribute('fill', 'currentColor')
+  const path = document.createElementNS(NS, 'path'); path.setAttribute('d', d)
+  svg.appendChild(path)
+  return svg
+}
+
 /* ── Row model ─────────────────────────────────────────────────────────────
  * Row = { type:'equal'|'add'|'del'|'mod', leftLineNo, rightLineNo, leftText, rightText }
  * blame is keyed by rightLineNo (the new revision's line). One Diff.diffLines()
@@ -175,7 +189,7 @@ export function renderCompare(target, { leftText, rightText, blame = {}, mode = 
   // transient hover tooltip (with a pin button) + persistent pins
   const tip = document.createElement('div'); tip.className = 'diff-tooltip hidden'
   const tipHead = document.createElement('div'); tipHead.className = 'diff-tip-head'
-  const pinBtn = document.createElement('button'); pinBtn.className = 'diff-pin-btn'; pinBtn.textContent = '📌'
+  const pinBtn = document.createElement('button'); pinBtn.className = 'diff-pin-btn'; pinBtn.appendChild(icon(ICON_PIN))
   pinBtn.dataset.i18nTitle = 'compare.pin'; pinBtn.title = t('compare.pin')
   pinBtn.addEventListener('click', e => { e.stopPropagation(); if (tip._row && tip._anchor) pinTooltip(tip._row, tip._anchor) })
   tipHead.appendChild(pinBtn)
@@ -214,7 +228,7 @@ export function renderCompare(target, { leftText, rightText, blame = {}, mode = 
   function pinTooltip(row, anchor) {
     const pin = document.createElement('div'); pin.className = 'diff-pin'
     const head = document.createElement('div'); head.className = 'diff-tip-head'
-    const close = document.createElement('button'); close.className = 'diff-pin-close'; close.textContent = '✕'
+    const close = document.createElement('button'); close.className = 'diff-pin-close'; close.appendChild(icon(ICON_PIN_OFF))
     close.dataset.i18nTitle = 'compare.unpin'; close.title = t('compare.unpin')
     close.addEventListener('click', () => { pin.remove(); const i = pins.indexOf(pin); if (i >= 0) pins.splice(i, 1) })
     head.appendChild(close)
