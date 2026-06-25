@@ -165,11 +165,19 @@ html, body {
 
 /* Zoom */
 #scaleSelect {
-  background: #636363;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: #636363;
+  /* slim stroked chevron-down, replacing the chunky native arrow */
+  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 9l6 6 6-6'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 6px center;
+  background-size: 12px;
   border: 1px solid #3a3a3a;
   border-radius: 3px;
   color: #fff;
-  padding: 3px 5px;
+  padding: 3px 22px 3px 7px;
   font-size: 12px;
   cursor: pointer;
   max-width: 110px;
