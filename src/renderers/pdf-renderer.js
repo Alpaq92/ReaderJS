@@ -10,6 +10,7 @@ export class PDFRenderer extends BaseRenderer {
   constructor() {
     super()
     this.pdfDoc    = null
+    this._task     = null
     this._pageW    = 0
     this._pageH    = 0
     this._observer = null
@@ -19,8 +20,8 @@ export class PDFRenderer extends BaseRenderer {
   async load(buffer, container, viewer) {
     await super.load(buffer, container, viewer)
 
-    const task   = pdfjsLib.getDocument({ data: new Uint8Array(buffer) })
-    this.pdfDoc  = await task.promise
+    this._task   = pdfjsLib.getDocument({ data: new Uint8Array(buffer) })
+    this.pdfDoc  = await this._task.promise
     this.numPages = this.pdfDoc.numPages
 
     const first  = await this.pdfDoc.getPage(1)
@@ -177,7 +178,8 @@ export class PDFRenderer extends BaseRenderer {
   // Returns the document text with a form-feed (\f) between pages, so the
   // compare view can diff page-by-page.
   async extractText(buffer) {
-    const doc = await pdfjsLib.getDocument({ data: new Uint8Array(buffer) }).promise
+    const task = pdfjsLib.getDocument({ data: new Uint8Array(buffer) })
+    const doc = await task.promise
     const pages = []
     try {
       for (let p = 1; p <= doc.numPages; p++) {
@@ -195,15 +197,16 @@ export class PDFRenderer extends BaseRenderer {
         pages.push(lines.join('\n'))
       }
     } finally {
-      doc.destroy()
+      await task.destroy()   // pdf.js 6: destroy the loading task, not the document proxy
     }
     return pages.join('\f')
   }
 
   destroy() {
     this._observer?.disconnect()
-    this.pdfDoc?.destroy()
+    this._task?.destroy()    // pdf.js 6: destroy the loading task, not the document proxy
     this.pdfDoc = null
+    this._task = null
     super.destroy()
   }
 }
