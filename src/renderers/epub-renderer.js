@@ -21,6 +21,7 @@ export class EPUBRenderer extends BaseRenderer {
     this._view     = null
     this._total    = 1
     this._onResize = null
+    this.defaultScaleOption = null  // reflowable: fills its frame, zoom = font size
   }
 
   async load(buffer, container, viewer) {

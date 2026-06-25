@@ -27,8 +27,8 @@ export class ComicRenderer extends BaseRenderer {
     this._observer = null
     this._naturalW = 0
     this._naturalH = 0
-    // Comic scans are large; default to fitting the viewer width like a reader.
-    this.defaultScaleOption = 'page-width'
+    // Fixed pages → fit one whole page to the window height, like a reader.
+    this.defaultScaleOption = 'page-height'
   }
 
   async load(buffer, container, viewer) {

@@ -175,7 +175,7 @@ class DocumentViewer {
   }
 
   _applyScaleOption(value) {
-    if (value === 'auto' || value === 'page-fit' || value === 'page-width') {
+    if (value === 'auto' || value === 'page-fit' || value === 'page-width' || value === 'page-height') {
       const vc = document.getElementById('viewerContainer')
       const w  = vc.clientWidth  - 48
       const h  = vc.clientHeight - 48
@@ -185,6 +185,8 @@ class DocumentViewer {
 
       if (value === 'page-width') {
         this._setScale(w / pw)
+      } else if (value === 'page-height') {
+        this._setScale(h / ph)
       } else if (value === 'page-fit') {
         this._setScale(Math.min(w / pw, h / ph))
       } else {

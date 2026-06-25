@@ -13,6 +13,7 @@ export class PDFRenderer extends BaseRenderer {
     this._pageW    = 0
     this._pageH    = 0
     this._observer = null
+    this.defaultScaleOption = 'page-height'  // fixed pages → fit one to the window height
   }
 
   async load(buffer, container, viewer) {
@@ -34,7 +35,10 @@ export class PDFRenderer extends BaseRenderer {
     }
 
     this._attachScrollObserver()
-    this._buildThumbnails()
+    // Await so the default-zoom re-render (page-height on open) doesn't run
+    // concurrently with thumbnail rendering — pdf.js cancels page renders that
+    // overlap. Guarded so a thumbnail failure can't abort opening the document.
+    try { await this._buildThumbnails() } catch (e) { console.warn('[PDF] thumbnail build failed:', e) }
   }
 
   async _renderPage(pageNum) {
