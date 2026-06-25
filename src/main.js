@@ -7,6 +7,7 @@ import { MDRenderer   } from './renderers/md-renderer.js'
 import { TXTRenderer  } from './renderers/txt-renderer.js'
 import { ComicRenderer } from './renderers/comic-renderer.js'
 import { EPUBRenderer } from './renderers/epub-renderer.js'
+import { t, applyTranslations, setLang, getLang } from './i18n.js'
 
 const EXT_MAP = {
   pdf: 'pdf',
@@ -39,6 +40,16 @@ class DocumentViewer {
     this.scale          = 1.0
 
     this._bindUI()
+    this._initI18n()
+  }
+
+  /* ── i18n ────────────────────────────────────────────────────────────── */
+  _initI18n() {
+    document.documentElement.lang = getLang()
+    const sel = document.getElementById('langSelect')
+    sel.value = getLang()
+    sel.addEventListener('change', e => setLang(e.target.value))
+    applyTranslations()
   }
 
   /* ── UI wiring ───────────────────────────────────────────────────────── */
@@ -109,7 +120,7 @@ class DocumentViewer {
     const format = EXT_MAP[ext]
 
     if (!format) {
-      this._showError(`Unsupported format ".${ext}". Supported: ${Object.keys(EXT_MAP).join(', ')}`)
+      this._showError(t('err.unsupported', { ext, list: Object.keys(EXT_MAP).join(', ') }))
       return
     }
 
@@ -144,7 +155,7 @@ class DocumentViewer {
       document.title = `${file.name} — ReaderJS`
     } catch (err) {
       console.error('[ReaderJS] load error:', err)
-      this._showError(`Could not open "${file.name}": ${err.message}`)
+      this._showError(t('err.couldNotOpen', { name: file.name, msg: err.message }))
     } finally {
       this._setLoading(false)
     }
@@ -207,7 +218,7 @@ class DocumentViewer {
 
   /* ── Print ───────────────────────────────────────────────────────────── */
   async print() {
-    if (!this.activeRenderer) { this._showError('No document loaded.'); return }
+    if (!this.activeRenderer) { this._showError(t('err.noDocument')); return }
 
     this._setLoading(true)
     try {
@@ -219,7 +230,7 @@ class DocumentViewer {
         this._setLoading(false)
       }, 1500)
     } catch (err) {
-      this._showError(`Print failed: ${err.message}`)
+      this._showError(t('err.printFailed', { msg: err.message }))
       this.activeRenderer?.cleanupAfterPrint()
       this._setLoading(false)
     }

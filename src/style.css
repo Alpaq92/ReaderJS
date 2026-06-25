@@ -165,7 +165,7 @@ html, body {
 .page-sep { color: #888; }
 
 /* Zoom */
-#scaleSelect {
+#scaleSelect, #langSelect {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -183,7 +183,7 @@ html, body {
   cursor: pointer;
   max-width: 110px;
 }
-#scaleSelect:focus { outline: none; }
+#scaleSelect:focus, #langSelect:focus { outline: none; }
 
 /* Format badge */
 #formatBadge {
