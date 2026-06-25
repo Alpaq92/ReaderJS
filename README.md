@@ -32,7 +32,7 @@ To give it a try without installing anything, visit the [live demo](https://alpa
 
 - PDF.js-inspired UI — sidebar thumbnails, page navigation, zoom, print
 - Drag & drop or browse to open files
-- Compare two versions of a document — PDF, e-books, Office and text formats (side-by-side / unified / inline) with pinnable, blame-aware tooltips
+- Compare two document versions (PDF, DjVu, e-books, Office, text) — side-by-side / unified / inline, with word-level highlights, pinnable blame-aware tooltips, and page-by-page diff for multi-page PDF/DjVu
 - Client-side only — documents are never uploaded or transmitted
 - Multilingual UI — auto-detects your browser language with a manual switcher (English, Polish, Spanish, French, German, Portuguese, Chinese, Japanese, Russian)
 
@@ -76,12 +76,14 @@ ReaderJS is built on these open-source libraries:
 | **[JSZip](https://github.com/Stuk/jszip)** | Stuk | ODF / ZIP container reading |
 | **[jQuery](https://github.com/jquery/jquery)** | OpenJS Foundation | DOM utility required internally by RTF.js |
 | **[marked](https://github.com/markedjs/marked)** | Christopher Jeffrey et al. | Markdown → HTML parsing and rendering |
+| **[jsdiff](https://github.com/kpdecker/jsdiff)** | Kevin Decker | Text diffing engine behind the two-version compare view (BSD-3) |
 | **[libarchive.js](https://github.com/nika-begiashvili/libarchivejs)** | Nika Begiashvili | CBR/CBT (RAR/TAR) extraction via a WASM build of libarchive — uses libarchive's own BSD-licensed RAR decoder, no UnRAR code |
 | **[foliate-js](https://github.com/johnfactotum/foliate-js)** | John Factotum | EPUB / MOBI / KF8 (AZW3) / FB2 parsing and paginated rendering |
 | **[UTIF.js](https://github.com/photopea/UTIF.js)** | Photopea | TIFF image decoding |
 | **[exifr](https://github.com/MikeKovarik/exifr)** | Mike Kovarik | EXIF / GPS metadata parsing for images |
 | **[Vite](https://github.com/vitejs/vite)** | Evan You / Vite contributors | Build tooling and development server |
 | **[Material Design Icons](https://pictogrammers.com/library/mdi/)** | Pictogrammers | UI icons (Apache-2.0) |
+| **[Open-Color](https://github.com/yeun/open-color)** | Heeyeun Jeong | Colour palette for the compare / diff view |
 
 Every library above is a normal **npm dependency** — `npm install` is all you
 need, no git submodules. The two that aren't published to npm
