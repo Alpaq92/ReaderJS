@@ -128,8 +128,13 @@ class DocumentViewer {
 
       this.numPages    = renderer.numPages
       this.currentPage = 1
-      this.scale       = 1.0
-      document.getElementById('scaleSelect').value = '1'
+
+      // Renderers may prefer a default zoom (e.g. comics fit to width);
+      // otherwise keep 100% without forcing a redundant re-render.
+      const scaleOpt = renderer.defaultScaleOption || '1'
+      document.getElementById('scaleSelect').value = scaleOpt
+      if (renderer.defaultScaleOption) this._applyScaleOption(scaleOpt)
+      else this.scale = 1.0
 
       this.updatePageInfo()
       this._setFormatBadge(format)

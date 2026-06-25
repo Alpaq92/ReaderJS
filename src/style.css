@@ -356,7 +356,6 @@ html, body {
   box-shadow: 0 2px 10px rgba(0,0,0,.5);
   flex-shrink: 0;
   line-height: 0;
-  max-width: 100%;
 }
 .comic-page img { display: block; width: 100%; height: auto; }
 
