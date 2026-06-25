@@ -8,6 +8,7 @@ import { TXTRenderer  } from './renderers/txt-renderer.js'
 import { ComicRenderer } from './renderers/comic-renderer.js'
 import { EPUBRenderer } from './renderers/epub-renderer.js'
 import { ImageRenderer } from './renderers/image-renderer.js'
+import { PPTXRenderer } from './renderers/pptx-renderer.js'
 import { t, applyTranslations, setLang, getLang } from './i18n.js'
 
 const EXT_MAP = {
@@ -16,6 +17,7 @@ const EXT_MAP = {
   rtf: 'rtf',
   docx: 'docx',
   doc: 'doc',
+  pptx: 'pptx',
   md: 'md', markdown: 'md',
   txt: 'txt', text: 'txt', log: 'txt',
   png: 'image', jpg: 'image', jpeg: 'image', gif: 'image', webp: 'image',
@@ -38,6 +40,7 @@ class DocumentViewer {
       comic: new ComicRenderer(),
       epub: new EPUBRenderer(),
       image: new ImageRenderer(),
+      pptx: new PPTXRenderer(),
     }
     this.activeRenderer = null
     this.currentPage    = 1

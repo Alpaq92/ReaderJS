@@ -17,6 +17,7 @@ To give it a try without installing anything, visit the [live demo](https://alpa
 | Rich Text Format | `.rtf` | RTF.js |
 | Legacy Word 97–2003 | `.doc` | JSDoc |
 | Word Open XML | `.docx` | mammoth.js |
+| PowerPoint | `.pptx` | PptxViewJS |
 | Markdown | `.md` `.markdown` | marked |
 | Plain text | `.txt` `.text` `.log` | native |
 | Image (+ EXIF) | `.png` `.jpg` `.gif` `.webp` `.avif` `.bmp` `.svg` `.tiff` | native + UTIF.js (TIFF) + exifr (EXIF) |
@@ -48,6 +49,7 @@ ReaderJS is built on these open-source libraries:
 | **[PDF.js](https://github.com/mozilla/pdf.js)** | Mozilla Foundation | PDF rendering (via `pdfjs-dist`) |
 | **[JSDoc](https://github.com/Alpaq92/JSDoc)** | Alpaq92 | Binary `.doc` (Word 97–2003) reading and rendering — pure JS, zero dependencies, clean-room [MS-CFB] / [MS-DOC] implementation |
 | **[mammoth.js](https://github.com/mwilliamson/mammoth.js)** | Michael Williamson | `.docx` (Word Open XML) → HTML conversion |
+| **[PptxViewJS](https://github.com/gptsci/pptxviewjs)** | Alex Wong / gptsci | `.pptx` (PowerPoint) slide rendering to canvas |
 | **[RTF.js](https://github.com/tbluemel/rtf.js)** | tbluemel | RTF document rendering, including EMFJS and WMFJS for Windows metafile graphics |
 | **[JSZip](https://github.com/Stuk/jszip)** | Stuk | ODF / ZIP container reading |
 | **[jQuery](https://github.com/jquery/jquery)** | OpenJS Foundation | DOM utility required internally by RTF.js |
