@@ -45,9 +45,8 @@ export class DjVuRenderer extends BaseRenderer {
     const gen = ++this._gen
 
     // Inline new URL(...) so Vite emits the dejaview worker as its own chunk.
-    // dejaview (MIT) is a pinned git dependency; point at its node_modules copy.
     this._worker = new Worker(
-      new URL('../../node_modules/dejaview/src/worker.js', import.meta.url),
+      new URL('dejaview/src/worker.js', import.meta.url),
       { type: 'module' })
     this._worker.onmessage = (e) => {
       const { id, error } = e.data
