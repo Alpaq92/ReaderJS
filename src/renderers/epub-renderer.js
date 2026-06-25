@@ -1,7 +1,8 @@
 import { BaseRenderer } from './base-renderer.js'
-// Registers the <foliate-view> custom element. foliate-js (MIT) isn't published
-// to npm, so it's pinned to a commit as a git dependency in package.json.
-import 'foliate-js/view.js'
+// `makeBook` parses any e-book (epub/mobi/azw3/fb2) into sections; importing the
+// module also registers the <foliate-view> custom element. foliate-js (MIT)
+// isn't on npm, so it's a pinned git dependency in package.json.
+import { makeBook } from 'foliate-js/view.js'
 
 // Reflowable books are styled by injecting CSS into each section document.
 // "Zoom" maps to font-size since EPUB/MOBI have no fixed page geometry.
@@ -9,6 +10,27 @@ const bookCSS = (scale) => `
   html { color-scheme: light dark; font-size: ${Math.round(100 * scale)}%; }
   p, li, blockquote, dd { line-height: 1.5; }
 `
+
+// Flatten a section document to text, breaking at block boundaries.
+const BLOCK = new Set(['P','DIV','LI','H1','H2','H3','H4','H5','H6','BLOCKQUOTE',
+  'PRE','TR','SECTION','ARTICLE','FIGCAPTION','DD','DT'])
+function docText(root) {
+  let out = ''
+  const walk = node => {
+    for (const child of node.childNodes) {
+      if (child.nodeType === 3) out += child.nodeValue
+      else if (child.nodeType === 1) {
+        const tag = child.tagName?.toUpperCase()
+        if (tag === 'BR') { out += '\n'; continue }
+        if (tag === 'SCRIPT' || tag === 'STYLE') continue
+        walk(child)
+        if (BLOCK.has(tag)) out += '\n'
+      }
+    }
+  }
+  walk(root)
+  return out.replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n')
+}
 
 /**
  * Renders reflowable e-books — EPUB, MOBI and KF8/AZW3 — via foliate-js's
@@ -92,6 +114,26 @@ export class EPUBRenderer extends BaseRenderer {
   // Reflowable: no meaningful fixed page geometry for page-fit/width.
   getPageWidth()  { return null }
   getPageHeight() { return null }
+
+  // Plain text of the whole book for the compare view — walk every section's
+  // document (works for epub/mobi/azw3/fb2 via foliate's makeBook).
+  async extractText(buffer, name) {
+    const book = await makeBook(new File([buffer], name || 'book.epub'))
+    try {
+      const parts = []
+      for (const section of (book.sections || [])) {
+        if (typeof section.createDocument !== 'function') continue
+        let doc
+        try { doc = await section.createDocument() } catch { continue }
+        const body = doc?.body || doc?.documentElement
+        const text = body ? docText(body).trim() : ''
+        if (text) parts.push(text)
+      }
+      return parts.join('\n\n')
+    } finally {
+      book?.destroy?.()
+    }
+  }
 
   destroy() {
     if (this._onResize) window.removeEventListener('resize', this._onResize)

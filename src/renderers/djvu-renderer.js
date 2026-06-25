@@ -32,6 +32,42 @@ export class DjVuRenderer extends BaseRenderer {
     })
   }
 
+  // Inline new URL(...) so Vite emits the dejaview worker as its own chunk.
+  _spawnWorker() {
+    this._worker = new Worker(new URL('dejaview/src/worker.js', import.meta.url), { type: 'module' })
+    this._worker.onmessage = (e) => {
+      const { id, error } = e.data
+      const p = this._pending.get(id)
+      if (!p) return
+      this._pending.delete(id)
+      error ? p.reject(new Error(error)) : p.resolve(e.data)
+    }
+  }
+
+  // Plain text of the DjVu for the compare view — the worker returns word zones
+  // ({xmin,ymin,xmax,ymax,str}) per page; group them into lines by baseline.
+  async extractText(buffer) {
+    this._spawnWorker()
+    try {
+      const meta = await this._call('open', { buffer })
+      const lines = []
+      for (let i = 0; i < (meta.pageCount || 1); i++) {
+        const { words } = await this._call('text', { index: i })
+        let line = [], lineY = null
+        for (const w of (words || [])) {
+          const h = (w.ymax - w.ymin) || 10
+          if (lineY != null && Math.abs(w.ymin - lineY) > h * 0.7) { lines.push(line.join(' ')); line = [] }
+          line.push(w.str); lineY = w.ymin
+        }
+        if (line.length) lines.push(line.join(' '))
+      }
+      return lines.join('\n')
+    } finally {
+      this._worker?.terminate()
+      this._worker = null
+    }
+  }
+
   _logical(info) {
     const dpi = info?.dpi || 300
     return {
@@ -44,17 +80,7 @@ export class DjVuRenderer extends BaseRenderer {
     await super.load(buffer, container, viewer)
     const gen = ++this._gen
 
-    // Inline new URL(...) so Vite emits the dejaview worker as its own chunk.
-    this._worker = new Worker(
-      new URL('dejaview/src/worker.js', import.meta.url),
-      { type: 'module' })
-    this._worker.onmessage = (e) => {
-      const { id, error } = e.data
-      const p = this._pending.get(id)
-      if (!p) return
-      this._pending.delete(id)
-      error ? p.reject(new Error(error)) : p.resolve(e.data)
-    }
+    this._spawnWorker()
 
     const meta = await this._call('open', { buffer })
     if (gen !== this._gen) return
