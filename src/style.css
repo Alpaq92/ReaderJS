@@ -16,6 +16,9 @@
   --oc-green-6: #40c057;  --oc-green-6-rgb: 64, 192, 87;
   --oc-blue-3:  #74c0fc;
   --oc-indigo-6: #4c6ef5;
+
+  /* app chrome — shared so the diff toolbar matches the main toolbar exactly */
+  --toolbar-bg: #474747;
 }
 
 /* ── Scrollbars — slim, dark, to match the app chrome ──────────────────── */
@@ -126,7 +129,7 @@ html, body {
 
 /* ── Toolbar ────────────────────────────────────────────────────────────── */
 #toolbarContainer {
-  background: #474747;
+  background: var(--toolbar-bg);
   border-bottom: 1px solid #1a1a1a;
   box-shadow: 0 2px 5px rgba(0,0,0,.45);
   display: flex;
@@ -189,6 +192,7 @@ html, body {
   color: #fff;
   text-align: center;
   font-size: 13px;
+  font-family: inherit;   /* match the toolbar text — UA default is Arial, which sits off the baseline */
   -moz-appearance: textfield;
 }
 #pageNumber::-webkit-inner-spin-button,
@@ -482,7 +486,7 @@ html, body {
   display: flex;
   gap: 4px;
   padding: 7px 10px;
-  background: var(--oc-gray-8);
+  background: var(--toolbar-bg);
   border-bottom: 1px solid var(--oc-gray-9);
   position: sticky;
   top: 0;
