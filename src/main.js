@@ -148,18 +148,18 @@ export class DocumentViewer {
         if (e.target.tagName !== 'LABEL') fileInput.click()
       })
 
-      // Compare two files: pick A, then B, then diff (demo affordance; the
-      // embed passes versions + blame programmatically via compare()).
+      // Compare: pick two files in one dialog (a chained second file dialog is
+      // blocked by browsers — no user gesture). The embed passes versions +
+      // blame programmatically via compare().
       const cmpBtn = document.getElementById('compareBtn')
-      const cmpA = document.getElementById('compareA')
-      const cmpB = document.getElementById('compareB')
-      if (cmpBtn && cmpA && cmpB) {
-        let fileA = null
-        cmpBtn.addEventListener('click', () => { fileA = null; cmpA.click() })
-        cmpA.addEventListener('change', e => { fileA = e.target.files?.[0]; e.target.value = ''; if (fileA) cmpB.click() })
-        cmpB.addEventListener('change', e => {
-          const fileB = e.target.files?.[0]; e.target.value = ''
-          if (fileA && fileB) this.compare(fileA, fileA.name, fileB, fileB.name)
+      const cmpInput = document.getElementById('compareInput')
+      if (cmpBtn && cmpInput) {
+        cmpBtn.addEventListener('click', () => cmpInput.click())
+        cmpInput.addEventListener('change', e => {
+          const files = [...(e.target.files || [])].sort((a, b) => a.name.localeCompare(b.name))
+          e.target.value = ''
+          if (files.length >= 2) this.compare(files[0], files[0].name, files[1], files[1].name)
+          else if (files.length === 1) this._showError(t('compare.pickTwo'))
         })
       }
     }
