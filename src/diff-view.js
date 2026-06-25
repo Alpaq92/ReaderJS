@@ -171,23 +171,11 @@ export function renderCompare(target, { leftText, rightText, blame = {}, mode = 
   target.innerHTML = ''
   target.classList.add('diff-view')
 
-  // mode toggle (segmented control)
-  const toggle = document.createElement('div')
-  toggle.className = 'diff-mode-toggle'
-  const group = document.createElement('div')
-  group.className = 'diff-mode-group'   // segmented well wrapping the three buttons
-  toggle.appendChild(group)
-  const btns = {}
-  for (const [m, key] of [['side-by-side', 'compare.modeSideBySide'], ['unified', 'compare.modeUnified'], ['inline', 'compare.modeInline']]) {
-    const b = document.createElement('button')
-    b.className = 'diff-mode-btn'; b.dataset.mode = m; b.dataset.i18n = key; b.textContent = t(key)
-    b.addEventListener('click', () => setMode(m))
-    group.appendChild(b); btns[m] = b
-  }
-
+  // The view-mode switcher is a dropdown in the host's top toolbar (the app and
+  // the embed both wire it to setMode); the diff itself is just the body.
   const bodyWrap = document.createElement('div')   // position:relative anchor for tooltips/pins
   bodyWrap.className = 'diff-body'
-  target.append(toggle, bodyWrap)
+  target.appendChild(bodyWrap)
 
   // transient hover tooltip (with a pin button) + persistent pins
   const tip = document.createElement('div'); tip.className = 'diff-tooltip hidden'
@@ -261,7 +249,6 @@ export function renderCompare(target, { leftText, rightText, blame = {}, mode = 
     pins.splice(0).forEach(p => p.remove())   // re-render invalidates anchors
     hideTip()
     RENDERERS[current](bodyWrap, rows)
-    for (const m in btns) btns[m].classList.toggle('active', m === current)
   }
   function setMode(m) { if (RENDERERS[m]) { current = m; render() } }
 

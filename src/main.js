@@ -325,6 +325,13 @@ export class DocumentViewer {
         blame: opts.blame || {}, mode: opts.mode || 'side-by-side',
       })
 
+      // drive the view mode from the top-toolbar dropdown (shown via .is-compare)
+      const modeSel = document.getElementById('compareModeSelect')
+      if (modeSel) {
+        modeSel.value = opts.mode || 'side-by-side'
+        modeSel.onchange = () => this._compareCtl?.setMode(modeSel.value)
+      }
+
       this.numPages = 1; this.currentPage = 1
       this.updatePageInfo()
       const badge = document.getElementById('formatBadge')
@@ -348,6 +355,8 @@ export class DocumentViewer {
     this._compareCtl?.destroy()
     this._compareCtl = null
     document.getElementById('mainContainer')?.classList.remove('is-compare')
+    const modeSel = document.getElementById('compareModeSelect')
+    if (modeSel) modeSel.onchange = null
   }
 
   /* ── Page navigation ─────────────────────────────────────────────────── */

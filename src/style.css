@@ -191,9 +191,8 @@ html, body {
   border-radius: 3px;
   color: #fff;
   text-align: center;
-  position: relative;
-  top: 1px;               /* nudge the digit down onto the "/ N" baseline */
   font-size: 13px;
+  line-height: 19px;      /* center the digit in the 19px content box (21px - 2px border) */
   font-family: inherit;   /* match the toolbar text — UA default is Arial, which sits off the baseline */
   -moz-appearance: textfield;
 }
@@ -204,7 +203,7 @@ html, body {
 .page-sep { color: #888; }
 
 /* Zoom */
-#scaleSelect, #langSelect {
+#scaleSelect, #langSelect, #compareModeSelect {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -227,6 +226,7 @@ html, body {
    min-width guarantees comfortable slack (not an exact hug of the text), and
    max-width lets the longest labels grow while keeping it from getting silly. */
 #scaleSelect { min-width: 140px; max-width: 170px; }
+#compareModeSelect { min-width: 132px; max-width: 180px; }
 #scaleSelect:focus, #langSelect:focus { outline: none; }
 
 /* Format badge */
@@ -484,47 +484,12 @@ html, body {
 #mainContainer.is-compare #toolbarContainer { box-shadow: none; }
 #mainContainer.is-compare #viewerContainer { padding: 0; }
 #mainContainer.is-compare #docContainer { align-self: stretch; padding-bottom: 0; }
-.diff-mode-toggle {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 10px;
-  min-height: 42px;                   /* same height as the main toolbar */
-  background: var(--toolbar-bg);
-  border-bottom: 1px solid #1a1a1a;   /* same hairline as the main toolbar */
-  position: sticky;
-  top: 0;
-  z-index: 3;
-}
-/* segmented control — a recessed well with one raised active segment, built
-   from the same tactile grays as the main toolbar's buttons */
-.diff-mode-group {
-  display: inline-flex;
-  gap: 2px;
-  padding: 3px;
-  background: #3a3a3a;
-  border: 1px solid #2b2b2b;
-  border-radius: 7px;
-  box-shadow: inset 0 1px 2px rgba(0,0,0,.25);
-}
-.diff-mode-btn {
-  background: transparent;
-  border: none;
-  border-radius: 4px;
-  padding: 5px 14px;
-  font-size: 12.5px;
-  line-height: 1;
-  color: #c7cbd1;
-  cursor: pointer;
-  transition: background .12s, color .12s, box-shadow .12s;
-}
-.diff-mode-btn:hover:not(.active) { background: rgba(255,255,255,.07); color: #fff; }
-.diff-mode-btn.active {
-  background: #5d5d5d;
-  color: #fff;
-  font-weight: 600;
-  box-shadow: 0 1px 2px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.08);
-}
+/* compare mode swaps the inert zoom controls for the view-mode dropdown */
+.compare-only { display: none; }
+#mainContainer.is-compare #zoomOut,
+#mainContainer.is-compare #scaleSelect,
+#mainContainer.is-compare #zoomIn { display: none; }
+#mainContainer.is-compare .compare-only { display: inline-block; }
 
 .diff-body { position: relative; flex: 1 1 auto; }
 .diff-rows { font-family: ui-monospace, 'Cascadia Code', Menlo, Consolas, monospace; font-size: 12.5px; line-height: 1.55; }
