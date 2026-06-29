@@ -23,6 +23,7 @@
     "libarchive.js": "^2.0.2",
     "mammoth": "^1.8.0",
     "marked": "^18.0.5",
+    "mhtml-to-html": "^2.0.1",
     "papaparse": "^5.5.4",
     "pdfjs-dist": "^6.0.227",
     "pptxviewjs": "^1.1.9",
