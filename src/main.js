@@ -20,6 +20,7 @@ const RENDERER_LOADERS = {
   csv:   () => import('./renderers/csv-renderer.js').then(m => new m.CSVRenderer()),
   code:  () => import('./renderers/code-renderer.js').then(m => new m.CodeRenderer()),
   djvu:  () => import('./renderers/djvu-renderer.js').then(m => new m.DjVuRenderer()),
+  mhtml: () => import('./renderers/mhtml-renderer.js').then(m => new m.MHTMLRenderer()),
 }
 
 const CODE_EXTS = ['js','mjs','cjs','jsx','ts','tsx','json','jsonc','xml','html','htm',
@@ -33,6 +34,7 @@ const EXT_MAP = {
   rtf: 'rtf',
   docx: 'docx',
   doc: 'doc',
+  mht: 'mhtml', mhtml: 'mhtml',
   pptx: 'pptx',
   xlsx: 'xlsx', xls: 'xlsx', xlsm: 'xlsx', xlsb: 'xlsx',
   csv: 'csv', tsv: 'csv',

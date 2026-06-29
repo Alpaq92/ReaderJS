@@ -147,5 +147,6 @@ theme + inline `style` attributes). No `'unsafe-eval'` is required.
   dejaview chunk, a DOCX pulls mammoth, etc.) — the initial load stays small.
 - **Formats:** PDF, DjVu, ODF (ODT/ODS/ODP/ODG), RTF, DOC, DOCX, PPTX,
   XLSX/XLS, CSV/TSV, Markdown, source code, images (+TIFF/EXIF),
-  comic archives (CBZ/CBR/CBT), e-books (EPUB/MOBI/AZW3/FB2), plain text.
+  comic archives (CBZ/CBR/CBT), e-books (EPUB/MOBI/AZW3/FB2),
+  web archives (MHTML), plain text.
 - See [CREDITS.md](CREDITS.md) — every bundled engine is permissively licensed.

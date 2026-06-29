@@ -25,6 +25,7 @@ dependencies** in anything that ships.
 | [JSZip](https://github.com/Stuk/jszip) | MIT (dual MIT/GPLv3 — MIT taken) | ODF/CBZ ZIP containers |
 | [libarchive.js](https://github.com/nika-begiashvili/libarchivejs) | MIT (bundled libarchive = BSD) | CBR/CBT (RAR/TAR) via WASM |
 | [foliate-js](https://github.com/johnfactotum/foliate-js) | MIT | EPUB/MOBI/AZW3/FB2 |
+| [mhtml-to-html](https://github.com/gildas-lormeau/mhtml-to-html) | MIT | MHTML/`.mht` web archives → HTML |
 | [UTIF.js](https://github.com/photopea/UTIF.js) | MIT | TIFF images |
 | [exifr](https://github.com/MikeKovarik/exifr) | MIT | EXIF/GPS metadata |
 | [Vite](https://github.com/vitejs/vite) | MIT | build tooling |
