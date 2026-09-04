@@ -72,8 +72,8 @@
   :root:not([data-theme="dark"]) {
     --bg-app:          var(--oc-gray-3);
     --bg-toolbar:      var(--oc-gray-0);
-    --bg-sidebar:      #fff;
-    --bg-sidebar-head: var(--oc-gray-1);
+    --bg-sidebar:      var(--oc-gray-1);
+    --bg-sidebar-head: var(--oc-gray-2);
     --bg-field:        #fff;
     --bg-hover:        var(--oc-gray-2);
     --bg-active:       var(--oc-gray-3);
@@ -99,8 +99,8 @@
 :root[data-theme="light"] {
   --bg-app:          var(--oc-gray-3);
   --bg-toolbar:      var(--oc-gray-0);
-  --bg-sidebar:      #fff;
-  --bg-sidebar-head: var(--oc-gray-1);
+  --bg-sidebar:      var(--oc-gray-1);
+  --bg-sidebar-head: var(--oc-gray-2);
   --bg-field:        #fff;
   --bg-hover:        var(--oc-gray-2);
   --bg-active:       var(--oc-gray-3);

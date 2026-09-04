@@ -38,6 +38,7 @@ To give it a try without installing anything, visit the [live demo](https://alpa
 - Compare two document versions (PDF, DjVu, e-books, Office, text) — side-by-side / unified / inline, with word-level highlights, pinnable blame-aware tooltips, and page-by-page diff for multi-page PDF/DjVu
 - Client-side only — documents are never uploaded or transmitted
 - Multilingual UI — auto-detects your browser language with a manual switcher (English, Polish, Spanish, French, German, Portuguese, Chinese, Japanese, Russian)
+- Light / dark / follow-the-system theme, with a localized switcher beside the language one — defaults to following the OS, and the light palette is [Open Color](https://yeun.github.io/open-color/)
 
 ## Embedding
 
