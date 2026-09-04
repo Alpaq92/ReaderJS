@@ -1,4 +1,4 @@
-import { t, applyTranslations, setLang, getLang } from './i18n.js'
+import { t, applyTranslations, setLang, getLang, getTheme, setTheme } from './i18n.js'
 import { flattenBlocks } from './dom-text.js'
 
 // Each format's renderer module is imported on demand, so opening a document
@@ -102,7 +102,20 @@ export class DocumentViewer {
       sel.value = getLang()
       sel.addEventListener('change', e => setLang(e.target.value))
     }
+    this._initTheme()
     applyTranslations()
+  }
+
+  // Light / dark / follow-the-OS. The stored choice is already applied by the inline
+  // script in index.html (before first paint); this only syncs the control and handles
+  // changes. In 'system' mode nothing is stored and no data-theme is set, so the
+  // prefers-color-scheme block in style.css follows the OS live - including a change
+  // made while the app is open, with no listener needed.
+  _initTheme() {
+    const sel = document.getElementById('themeSelect')
+    if (!sel) return
+    sel.value = getTheme()
+    sel.addEventListener('change', e => setTheme(e.target.value))
   }
 
   /* ── UI wiring ───────────────────────────────────────────────────────── */

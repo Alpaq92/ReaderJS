@@ -383,6 +383,21 @@ const COMPARE = {
 }
 for (const code in COMPARE) Object.assign(dict[code], COMPARE[code])
 
+// Theme switcher (light / dark / follow the OS). Kept as its own table and merged
+// like COMPARE above, so adding a UI area does not mean editing nine nested objects.
+const THEME = {
+  en: { 'tip.theme':'Theme', 'theme.system':'System', 'theme.light':'Light', 'theme.dark':'Dark' },
+  pl: { 'tip.theme':'Motyw', 'theme.system':'Systemowy', 'theme.light':'Jasny', 'theme.dark':'Ciemny' },
+  es: { 'tip.theme':'Tema', 'theme.system':'Sistema', 'theme.light':'Claro', 'theme.dark':'Oscuro' },
+  fr: { 'tip.theme':'Thème', 'theme.system':'Système', 'theme.light':'Clair', 'theme.dark':'Sombre' },
+  de: { 'tip.theme':'Design', 'theme.system':'System', 'theme.light':'Hell', 'theme.dark':'Dunkel' },
+  pt: { 'tip.theme':'Tema', 'theme.system':'Sistema', 'theme.light':'Claro', 'theme.dark':'Escuro' },
+  zh: { 'tip.theme':'主题', 'theme.system':'跟随系统', 'theme.light':'浅色', 'theme.dark':'深色' },
+  ja: { 'tip.theme':'テーマ', 'theme.system':'システム', 'theme.light':'ライト', 'theme.dark':'ダーク' },
+  ru: { 'tip.theme':'Тема', 'theme.system':'Системная', 'theme.light':'Светлая', 'theme.dark':'Тёмная' },
+}
+for (const code in THEME) Object.assign(dict[code], THEME[code])
+
 const STORAGE_KEY = 'readerjs-lang'
 
 function detectLang() {
@@ -416,4 +431,26 @@ export function setLang(code) {
   try { localStorage.setItem(STORAGE_KEY, code) } catch { /* storage blocked (e.g. sandboxed/embedded) */ }
   document.documentElement.lang = code
   applyTranslations()
+}
+
+/* ── Theme ───────────────────────────────────────────────────────────────
+   Three states: 'system' (default), 'light', 'dark'. Only an explicit choice is
+   stored and only an explicit choice sets data-theme; in system mode the
+   attribute is absent and style.css's prefers-color-scheme block decides. */
+const THEME_KEY = 'readerjs-theme'
+export const THEMES = ['system', 'light', 'dark']
+
+export function getTheme() {
+  try {
+    const v = localStorage.getItem(THEME_KEY)
+    if (THEMES.includes(v)) return v
+  } catch { /* storage blocked (e.g. sandboxed/embedded) */ }
+  return 'system'
+}
+
+export function setTheme(mode) {
+  if (!THEMES.includes(mode)) return
+  if (mode === 'system') document.documentElement.removeAttribute('data-theme')
+  else document.documentElement.dataset.theme = mode
+  try { localStorage.setItem(THEME_KEY, mode) } catch { /* storage blocked */ }
 }
