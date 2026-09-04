@@ -2,12 +2,17 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 /* ── Open-Color palette (https://yeun.github.io/open-color/, MIT) ──────────
-   The subset used by the compare/diff view, so it stays on a principled scale
-   and reads as part of the app's dark-gray + blue-accent chrome. */
+   The subset used by the compare/diff view and by the light theme, so both stay
+   on a principled scale and read as part of the same design. */
 :root {
+  --oc-gray-0:  #f8f9fa;
+  --oc-gray-1:  #f1f3f5;
+  --oc-gray-2:  #e9ecef;
   --oc-gray-3:  #dee2e6;
+  --oc-gray-4:  #ced4da;
   --oc-gray-5:  #adb5bd;
   --oc-gray-6:  #868e96;
+  --oc-gray-7:  #495057;
   --oc-gray-8:  #343a40;
   --oc-gray-9:  #212529;
   --oc-red-1:   #ffe3e3;
@@ -15,23 +20,125 @@
   --oc-green-1: #d3f9d8;
   --oc-green-6: #40c057;  --oc-green-6-rgb: 64, 192, 87;
   --oc-blue-3:  #74c0fc;
+  --oc-blue-7:  #1971c2;
+  --oc-blue-8:  #1864ab;
   --oc-indigo-6: #4c6ef5;
-
-  /* app chrome — shared so the diff toolbar matches the main toolbar exactly */
-  --toolbar-bg: #474747;
 }
 
+/* ── Theme tokens ─────────────────────────────────────────────────────────
+   Three states, and the order below is what makes all three work:
+     * bare :root          — the DARK palette, i.e. the app's original look, and
+                             the value every rule actually resolves against;
+     * prefers-color-scheme — SYSTEM mode, guarded with :not([data-theme="dark"])
+                             so an explicit dark choice still beats a light OS;
+     * [data-theme="light"] — an explicit choice, which must win in both
+                             directions, hence a third block rather than relying
+                             on the media query alone.
+   "System" is the default: main.js only sets data-theme once the user picks
+   something, so with no stored preference the media query is in charge.
+   Document surfaces (.pdf-page, .image-info, …) are deliberately NOT themed —
+   a page is white paper in both themes; only the chrome around it flips. */
+:root {
+  --bg-app:          #525659;   /* the surround the pages sit on */
+  --bg-toolbar:      #474747;
+  --bg-sidebar:      #3a3a3a;
+  --bg-sidebar-head: #2e2e2e;
+  --bg-field:        #636363;   /* inputs and selects */
+  --bg-hover:        #666;
+  --bg-active:       #555;
+  --border:          #3a3a3a;   /* field outlines */
+  --border-strong:   #111;      /* structural edges */
+  --border-toolbar:  #1a1a1a;
+  --fg:              #fff;
+  --fg-strong:       #ddd;
+  --fg-muted:        #aaa;
+  --fg-faint:        #777;
+  --fg-dim:          #666;
+  --fg-sep:          #888;
+  --dropzone-border: #666;
+  --accent:          #90caf9;
+  --accent-rgb:      144, 202, 249;
+  --shadow-toolbar:  rgba(0, 0, 0, .45);
+  --shadow-thumb:    rgba(0, 0, 0, .5);
+  --diff-bg:         var(--oc-gray-9);
+  --diff-fg:         var(--oc-gray-3);
+  /* A custom property cannot be interpolated inside url(), so the whole image is
+     the token rather than just its stroke colour. */
+  --select-chevron:  url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 9l6 6 6-6'/></svg>");
+}
+
+/* The light palette, defined once and referenced by both selectors below. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg-app:          var(--oc-gray-3);
+    --bg-toolbar:      var(--oc-gray-0);
+    --bg-sidebar:      #fff;
+    --bg-sidebar-head: var(--oc-gray-1);
+    --bg-field:        #fff;
+    --bg-hover:        var(--oc-gray-2);
+    --bg-active:       var(--oc-gray-3);
+    --border:          var(--oc-gray-4);
+    --border-strong:   var(--oc-gray-4);
+    --border-toolbar:  var(--oc-gray-4);
+    --fg:              var(--oc-gray-9);
+    --fg-strong:       var(--oc-gray-8);
+    --fg-muted:        var(--oc-gray-7);
+    --fg-faint:        var(--oc-gray-7);
+    --fg-dim:          var(--oc-gray-6);
+    --fg-sep:          var(--oc-gray-7);
+    --dropzone-border: var(--oc-gray-6);
+    --accent:          var(--oc-blue-8);
+    --accent-rgb:      24, 100, 171;
+    --shadow-toolbar:  rgba(0, 0, 0, .18);
+    --shadow-thumb:    rgba(0, 0, 0, .25);
+    --diff-bg:         var(--oc-gray-0);
+    --diff-fg:         var(--oc-gray-9);
+    --select-chevron:  url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23212529' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 9l6 6 6-6'/></svg>");
+  }
+}
+:root[data-theme="light"] {
+  --bg-app:          var(--oc-gray-3);
+  --bg-toolbar:      var(--oc-gray-0);
+  --bg-sidebar:      #fff;
+  --bg-sidebar-head: var(--oc-gray-1);
+  --bg-field:        #fff;
+  --bg-hover:        var(--oc-gray-2);
+  --bg-active:       var(--oc-gray-3);
+  --border:          var(--oc-gray-4);
+  --border-strong:   var(--oc-gray-4);
+  --border-toolbar:  var(--oc-gray-4);
+  --fg:              var(--oc-gray-9);
+  --fg-strong:       var(--oc-gray-8);
+  --fg-muted:        var(--oc-gray-7);
+  --fg-faint:        var(--oc-gray-7);
+  --fg-dim:          var(--oc-gray-6);
+  --fg-sep:          var(--oc-gray-7);
+  --dropzone-border: var(--oc-gray-6);
+  --accent:          var(--oc-blue-8);
+  --accent-rgb:      24, 100, 171;
+  --shadow-toolbar:  rgba(0, 0, 0, .18);
+  --shadow-thumb:    rgba(0, 0, 0, .25);
+  --diff-bg:         var(--oc-gray-0);
+  --diff-fg:         var(--oc-gray-9);
+  --select-chevron:  url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23212529' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 9l6 6 6-6'/></svg>");
+}
+
+/* Let form controls, scrollbars and the like follow the resolved theme. */
+:root { color-scheme: dark; }
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) { color-scheme: light; } }
+:root[data-theme="light"] { color-scheme: light; }
+
 /* ── Scrollbars — slim, dark, to match the app chrome ──────────────────── */
-* { scrollbar-width: thin; scrollbar-color: #5e5e5e transparent; }
+* { scrollbar-width: thin; scrollbar-color: var(--fg-dim) transparent; }
 ::-webkit-scrollbar { width: 11px; height: 11px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: #5a5a5a;
+  background: var(--fg-dim);
   border: 3px solid transparent;     /* breathing room → a slimmer-looking thumb */
   border-radius: 8px;
   background-clip: padding-box;
 }
-::-webkit-scrollbar-thumb:hover { background: #787878; background-clip: padding-box; }
+::-webkit-scrollbar-thumb:hover { background: var(--fg-faint); background-clip: padding-box; }
 ::-webkit-scrollbar-corner { background: transparent; }
 
 html, body {
@@ -39,8 +146,8 @@ html, body {
   overflow: hidden;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 13px;
-  background: #525659;
-  color: #fff;
+  background: var(--bg-app);
+  color: var(--fg);
 }
 
 /* ── Outer layout ───────────────────────────────────────────────────────── */
@@ -54,8 +161,8 @@ html, body {
 #sidebarContainer {
   width: 0;
   min-width: 0;
-  background: #3a3a3a;
-  border-right: 1px solid #111;
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border-strong);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -70,21 +177,21 @@ html, body {
   align-items: center;
   gap: 8px;
   padding: 0 14px;
-  background: #2e2e2e;
-  border-bottom: 1px solid #111;
+  background: var(--bg-sidebar-head);
+  border-bottom: 1px solid var(--border-strong);
   flex-shrink: 0;
   min-height: 42px;   /* match the main toolbar height */
-  color: #90caf9;     /* header icon colour */
+  color: var(--accent);     /* header icon colour */
 }
 .sidebar-title {
-  color: #bbb;
+  color: var(--fg-strong);
   font-size: 12px;
   font-weight: 700;
   letter-spacing: .05em;
   text-transform: uppercase;
 }
 .thumbs-empty {
-  color: #777;
+  color: var(--fg-faint);
   font-size: 12px;
   text-align: center;
   padding: 24px 8px;
@@ -110,10 +217,10 @@ html, body {
   margin: 0 auto;
   max-width: 100%;
   height: auto;
-  box-shadow: 0 1px 4px rgba(0,0,0,.5);
+  box-shadow: 0 1px 4px var(--shadow-thumb);
 }
 .thumb-label {
-  color: #aaa;
+  color: var(--fg-muted);
   font-size: 11px;
   margin-top: 3px;
 }
@@ -129,9 +236,9 @@ html, body {
 
 /* ── Toolbar ────────────────────────────────────────────────────────────── */
 #toolbarContainer {
-  background: var(--toolbar-bg);
-  border-bottom: 1px solid #1a1a1a;
-  box-shadow: 0 2px 5px rgba(0,0,0,.45);
+  background: var(--bg-toolbar);
+  border-bottom: 1px solid var(--border-toolbar);
+  box-shadow: 0 2px 5px var(--shadow-toolbar);
   display: flex;
   align-items: center;
   padding: 4px 6px;
@@ -148,7 +255,7 @@ html, body {
 .toolbar-btn {
   background: transparent;
   border: none;
-  color: #fff;
+  color: var(--fg);
   cursor: pointer;
   padding: 5px 6px;
   border-radius: 3px;
@@ -161,14 +268,14 @@ html, body {
   transition: background 0.1s;
   user-select: none;
 }
-.toolbar-btn:hover:not(:disabled) { background: #666; }
-.toolbar-btn:active:not(:disabled) { background: #555; }
+.toolbar-btn:hover:not(:disabled) { background: var(--bg-hover); }
+.toolbar-btn:active:not(:disabled) { background: var(--bg-active); }
 .toolbar-btn:disabled { opacity: 0.35; cursor: default; }
 
 .toolbar-separator {
   width: 1px;
   height: 22px;
-  background: #666;
+  background: var(--fg-dim);
   margin: 0 3px;
   flex-shrink: 0;
 }
@@ -178,7 +285,7 @@ html, body {
   display: flex;
   align-items: center;
   gap: 5px;
-  color: #ddd;
+  color: var(--fg-strong);
   font-size: 13px;
 }
 
@@ -186,10 +293,10 @@ html, body {
   width: 48px;
   height: 21px;
   padding: 0 5px;
-  background: #636363;
-  border: 1px solid #3a3a3a;
+  background: var(--bg-field);
+  border: 1px solid var(--border);
   border-radius: 3px;
-  color: #fff;
+  color: var(--fg);
   text-align: center;
   font-size: 13px;
   line-height: 19px;      /* center the digit in the 19px content box (21px - 2px border) */
@@ -198,24 +305,24 @@ html, body {
 }
 #pageNumber::-webkit-inner-spin-button,
 #pageNumber::-webkit-outer-spin-button { -webkit-appearance: none; }
-#pageNumber:focus { outline: none; border-color: #90caf9; }
+#pageNumber:focus { outline: none; border-color: var(--accent); }
 
-.page-sep { color: #888; }
+.page-sep { color: var(--fg-sep); }
 
 /* Zoom */
-#scaleSelect, #langSelect, #compareModeSelect {
+#scaleSelect, #langSelect, #themeSelect, #compareModeSelect {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  background-color: #636363;
+  background-color: var(--bg-field);
   /* slim stroked chevron-down, replacing the chunky native arrow */
-  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 9l6 6 6-6'/></svg>");
+  background-image: var(--select-chevron);
   background-repeat: no-repeat;
   background-position: right 6px center;
   background-size: 12px;
-  border: 1px solid #3a3a3a;
+  border: 1px solid var(--border);
   border-radius: 3px;
-  color: #fff;
+  color: var(--fg);
   padding: 3px 22px 3px 7px;
   font-size: 12px;
   cursor: pointer;
@@ -227,9 +334,14 @@ html, body {
    max-width lets the longest labels grow while keeping it from getting silly. */
 #scaleSelect { min-width: 140px; max-width: 170px; }
 #compareModeSelect { min-width: 132px; max-width: 180px; }
-#scaleSelect:focus, #langSelect:focus { outline: none; }
+#scaleSelect:focus, #langSelect:focus, #themeSelect:focus { outline: none; }
 
-/* Format badge */
+/* Format badge.
+   It sits between two toolbar separators; with no document open it carries .hidden
+   and the two separators collapse together into a visible double rule. Drop the
+   trailing one in that state - an adjacent-sibling rule reaches it because the
+   hidden badge is still in the DOM between them. */
+#formatBadge.hidden + .toolbar-separator { display: none; }
 #formatBadge {
   padding: 2px 9px;
   border-radius: 10px;
@@ -262,7 +374,7 @@ html, body {
 /* ── Loading bar ────────────────────────────────────────────────────────── */
 #loadingBar {
   height: 3px;
-  background: #3a3a3a;
+  background: var(--bg-sidebar);
   flex-shrink: 0;
   position: relative;
   overflow: hidden;
@@ -270,7 +382,7 @@ html, body {
 #loadingBarProgress {
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, #90caf9 0%, #42a5f5 50%, #90caf9 100%);
+  background: linear-gradient(90deg, var(--accent) 0%, rgba(var(--accent-rgb), .55) 50%, var(--accent) 100%);
   background-size: 200% 100%;
   animation: loading-sweep 1.4s linear infinite;
 }
@@ -308,7 +420,7 @@ html, body {
 #viewerContainer {
   flex: 1;
   overflow: auto;
-  background: #525659;
+  background: var(--bg-app);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -323,7 +435,7 @@ html, body {
   justify-content: center;
   width: min(90%, 620px);
   min-height: 360px;
-  border: 2px dashed #666;
+  border: 2px dashed var(--dropzone-border);
   border-radius: 10px;
   cursor: pointer;
   transition: border-color .2s, background .2s;
@@ -331,29 +443,29 @@ html, body {
   flex-shrink: 0;
 }
 #dropzone.drag-over {
-  border-color: #90caf9;
-  background: rgba(144,202,249,.07);
+  border-color: var(--accent);
+  background: rgba(var(--accent-rgb), .07);
 }
 
 #dropzoneContent {
   text-align: center;
   padding: 40px 24px;
-  color: #aaa;
+  color: var(--fg-muted);
   pointer-events: none;
 }
 #dropzoneContent label { pointer-events: auto; }
 
-#dropzoneIcon { margin-bottom: 16px; }
+#dropzoneIcon { margin-bottom: 16px; color: var(--accent); }   /* the SVG fills with currentColor */
 
 #dropzoneContent h2 {
   font-size: 22px;
   font-weight: 300;
-  color: #ddd;
+  color: var(--fg-strong);
   margin-bottom: 8px;
 }
 #dropzoneContent p { font-size: 14px; }
 #dropzoneContent label {
-  color: #90caf9;
+  color: var(--accent);
   cursor: pointer;
   text-decoration: underline;
   pointer-events: all;
@@ -395,10 +507,10 @@ html, body {
 .powered-by {
   margin-top: 22px;
   font-size: 11px;
-  color: #666;
+  color: var(--fg-faint);
 }
-.powered-by a { color: #777; }
-.powered-by a:hover { color: #aaa; }
+.powered-by a { color: var(--fg-muted); }
+.powered-by a:hover { color: var(--fg-muted); }
 
 /* ── Document container ─────────────────────────────────────────────────── */
 #docContainer {
@@ -486,8 +598,8 @@ html, body {
 
 /* ── Compare / diff view — Open-Color palette, aligned to the app chrome ── */
 .diff-page {
-  background: var(--oc-gray-9);
-  color: var(--oc-gray-3);
+  background: var(--diff-bg);
+  color: var(--diff-fg);
   width: 100%;
   min-height: 100%;
   align-self: stretch;
