@@ -29,6 +29,29 @@ const CODE_EXTS = ['js','mjs','cjs','jsx','ts','tsx','json','jsonc','xml','html'
   'yaml','yml','css','scss','less','py','java','c','h','cpp','cc','hpp','cs','go','rs',
   'rb','php','sh','bash','sql','kt','swift','toml','ini','diff']
 
+/**
+ * Heuristic: does this look like a binary file rather than text?
+ *
+ * A NUL byte is the classic marker — no text encoding this decoder handles produces one — and a
+ * high density of other C0 control characters catches the rest. Deliberately cheap and
+ * conservative: the cost of a false "binary" is a file the user must rename to read, while a
+ * false "text" is a screen of replacement characters, so it errs toward trying to read.
+ *
+ * @param {ArrayBuffer} buffer First few KB of the file.
+ * @returns {boolean}
+ */
+function looksBinary(buffer) {
+  const bytes = new Uint8Array(buffer)
+  if (!bytes.length) return false
+  let control = 0
+  for (const b of bytes) {
+    if (b === 0) return true
+    // C0 controls except tab (9), LF (10), CR (13) and form feed (12)
+    if (b < 9 || (b > 13 && b < 32)) control++
+  }
+  return control / bytes.length > 0.3
+}
+
 const EXT_MAP = {
   pdf: 'pdf',
   ps: 'ps', eps: 'ps', epsf: 'ps',
@@ -240,11 +263,26 @@ export class DocumentViewer {
   // `source` is a Blob/File or an ArrayBuffer.
   async loadBytes(source, name, mime) {
     const ext    = (name || '').split('.').pop().toLowerCase()
-    const format = EXT_MAP[ext]
+    let format = EXT_MAP[ext]
 
     if (!format) {
-      this._showError(t('err.unsupported', { ext, list: Object.keys(EXT_MAP).join(', ') }))
-      return
+      // Unknown extension: try to read it as text rather than refusing outright. Most files
+      // without a dedicated renderer — config, logs, dotfiles, source in a language not in
+      // CODE_EXTS — are perfectly readable that way, and refusing them is a worse default than
+      // showing them.
+      //
+      // Binaries are the exception: decoding an executable as UTF-8 produces a screenful of
+      // replacement characters, which is less useful than saying so. Sniff the first 4 KB and
+      // keep the error for that case only. Reading just the head keeps this an early return,
+      // before any loading state has been set up.
+      const head = source instanceof ArrayBuffer
+        ? source.slice(0, 4096)
+        : await source.slice(0, 4096).arrayBuffer()
+      if (looksBinary(head)) {
+        this._showError(t('err.unsupported', { ext, list: Object.keys(EXT_MAP).join(', ') }))
+        return
+      }
+      format = 'txt'
     }
 
     this._setLoading(true)
